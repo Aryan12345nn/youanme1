@@ -11,10 +11,13 @@
 </head>
 <body>
 
-<div class="user-selection" id="userSelection">
-    <h2>Select User</h2>
-    <button class="user-btn" data-user="ishu">Ishu</button>
-    <button class="user-btn" data-user="billi">Billi</button>
+<!-- Overlay popup for user selection -->
+<div class="user-selection overlay" id="userSelection">
+    <div class="overlay-content">
+        <h2>Select User</h2>
+        <button class="user-btn" data-user="ishu">Ishu</button>
+        <button class="user-btn" data-user="billi">Billi</button>
+    </div>
 </div>
 
 <div class="chat-container" id="chatContainer" style="display:none;">
@@ -50,4 +53,3 @@
 <script src="app.js"></script>
 </body>
 </html>
-
