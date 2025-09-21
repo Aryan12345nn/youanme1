@@ -1,102 +1,82 @@
-// Prompt for name every time page loads
-const username = prompt("Select user: Ishu or Billi");
-document.getElementById('chatUser').innerText = 'Chat - ' + username;
-
-const messagesDiv = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
-const sendBtn = document.getElementById('sendBtn');
-const statusSpan = document.getElementById('status');
-const typingStatusDiv = document.getElementById('typingStatus');
-const clearBtn = document.getElementById('clearBtn');
-
-// 🔹 Firebase config embedded directly
+// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyAyLfQR-k8L45imDdx0N-5pw8P43_pmJ8E",
-  authDomain: "youandme12345-d1d17.firebaseapp.com",
-  databaseURL: "https://youandme12345-d1d17-default-rtdb.firebaseio.com",
-  projectId: "youandme12345-d1d17",
-  storageBucket: "youandme12345-d1d17.firebasestorage.app",
-  messagingSenderId: "500541583420",
-  appId: "1:500541583420:web:ec35f7355884fb6e345339"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const chatRef = db.ref('chat');
-const typingRef = db.ref('typing');
-const statusRef = db.ref('status/' + username);
+// Ask for username
+let username = prompt("Enter your name (ishu/billi):");
+document.getElementById('chatUser').innerText = 'Chat - ' + username;
 
-// set online status
-statusRef.set({online: true, lastActive: Date.now()});
-statusRef.onDisconnect().set({online: false, lastActive: Date.now()});
+// Set user online status
+const statusEl = document.getElementById('status');
+db.ref('status/' + username).set('online');
+db.ref('status/' + username).onDisconnect().set('offline');
 
-// listen for other user status
-db.ref('status').on('value', snap => {
-  let txt = '';
-  snap.forEach(child => {
-    if (child.key !== username) {
-      const val = child.val();
-      if (val.online) txt = child.key + ' is online';
-      else txt = child.key + ' last active ' + new Date(val.lastActive).toLocaleTimeString();
-    }
-  });
-  statusSpan.innerText = txt;
+// Determine other user
+let otherUser = username === 'ishu' ? 'billi' : 'ishu';
+db.ref('status/' + otherUser).on('value', snap => {
+    statusEl.innerText = snap.val() === 'online' ? 'Online' : 'Offline';
 });
 
-// send message
+// Sending message
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const messagesDiv = document.getElementById('messages');
+const typingHeader = document.getElementById('typingHeader');
+const clearBtn = document.getElementById('clearBtn');
+
 sendBtn.addEventListener('click', sendMessage);
-messageInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendMessage();
-  typingRef.set(username);
-  setTimeout(() => typingRef.remove(), 1500);
+messageInput.addEventListener('keypress', function(e){
+    if(e.key === 'Enter') sendMessage();
+    // typing indicator
+    db.ref('typing/' + username).set(true);
+    setTimeout(() => db.ref('typing/' + username).set(false), 1000);
 });
 
 function sendMessage() {
-  const text = messageInput.value.trim();
-  if (!text) return;
-  const msgObj = {
-    user: username,
-    text: text,
-    time: Date.now(),
-    delivered: true,
-    read: false
-  };
-  chatRef.push(msgObj);
-  messageInput.value = '';
+    const msg = messageInput.value.trim();
+    if(!msg) return;
+
+    db.ref('messages').push({
+        sender: username,
+        text: msg,
+        timestamp: Date.now()
+    });
+    messageInput.value = '';
 }
 
-// clear chat
+// Display messages
+db.ref('messages').on('child_added', snap => {
+    const data = snap.val();
+    const msgEl = document.createElement('div');
+    msgEl.classList.add('message');
+    msgEl.classList.add(data.sender === username ? 'self' : 'other');
+    msgEl.textContent = data.text;
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
+
+// Typing indicator in header
+db.ref('typing/' + otherUser).on('value', snap => {
+    typingHeader.innerText = snap.val() ? otherUser + " is typing..." : "";
+});
+
+// Clear chat
 clearBtn.addEventListener('click', () => {
-  chatRef.remove();
-});
-
-// show typing
-typingRef.on('value', snap => {
-  const val = snap.val();
-  if (val && val !== username) {
-    typingStatusDiv.innerText = val + ' is typing...';
-  } else {
-    typingStatusDiv.innerText = '';
-  }
-});
-
-// read messages + display
-chatRef.on('value', snap => {
-  messagesDiv.innerHTML = '';
-  snap.forEach(child => {
-    const msg = child.val();
-    const div = document.createElement('div');
-    div.classList.add('message');
-    if (msg.user === username) {
-      div.classList.add('me');
-    } else {
-      div.classList.add('other');
+    if(confirm("Are you sure you want to clear the chat?")) {
+        db.ref('messages').remove();
     }
-    div.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}
-      <span class="ticks">${msg.delivered ? '✓' : ''}${msg.read ? '✓' : ''}</span>`;
-    messagesDiv.appendChild(div);
-  });
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
+
+// Remove messages from UI if deleted
+db.ref('messages').on('value', snap => {
+    if(!snap.exists()) messagesDiv.innerHTML = '';
 });
