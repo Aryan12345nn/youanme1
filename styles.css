@@ -2,14 +2,15 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body, html {
     height: 100%;
-    background: #e5ddd5;
+    background: #ece5dd;
 }
 
+/* Chat container */
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -20,53 +21,73 @@ body, html {
     border: 1px solid #ccc;
 }
 
+/* Header */
 .header {
-    padding: 15px;
-    background: #075e54;
-    color: white;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    flex-direction: row;
+    align-items: center;
+    padding: 10px 15px;
+    background: #075e54;
+    color: white;
+    position: relative;
 }
 
-.header div {
+.header-left {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #25d366;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.header-info h2 {
+    font-size: 16px;
+}
+
+.header-info span {
+    font-size: 12px;
 }
 
 .typing-header {
-    font-size: 0.9em;
     font-style: italic;
-    color: #e0f0f0;
-    margin-top: 2px;
+    color: #d0f0f0;
 }
 
-#clearBtn {
+/* Clear button */
+.clear-btn {
     background: #25d366;
     border: none;
-    padding: 8px 15px;
-    color: white;
+    padding: 6px 12px;
     border-radius: 20px;
     cursor: pointer;
-    height: fit-content;
+    color: white;
+    font-weight: bold;
 }
 
+/* Messages area */
 .messages {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     background: #ece5dd;
 }
 
+/* Messages bubbles */
 .message {
     padding: 10px 15px;
     border-radius: 20px;
     max-width: 70%;
     word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .message.self {
@@ -79,9 +100,10 @@ body, html {
     background: #ffffff;
 }
 
+/* Input container */
 .input-container {
     display: flex;
-    padding: 10px;
+    padding: 10px 15px;
     border-top: 1px solid #ccc;
     background: #f0f0f0;
 }
@@ -92,14 +114,25 @@ body, html {
     border-radius: 20px;
     border: 1px solid #ccc;
     outline: none;
+    font-size: 14px;
 }
 
 .input-container button {
     margin-left: 10px;
     padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
     background: #075e54;
     color: white;
-    border: none;
-    border-radius: 20px;
     cursor: pointer;
+}
+
+/* Scrollbar styling */
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
 }
