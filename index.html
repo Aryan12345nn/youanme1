@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat App</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Clone</title>
+<link rel="stylesheet" href="style.css">
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="chat-header">
-      <h3 id="chatUser">Chat</h3>
-      <span id="status" class="status"></span>
-      <button id="clearBtn">Clear Chat</button>
+
+<div class="chat-container">
+    <div class="header">
+        <div>
+            <h2 id="chatUser">Chat</h2>
+            <span id="status">Offline</span>
+            <span id="typingHeader" class="typing-header"></span>
+        </div>
+        <button id="clearBtn">Clear Chat</button>
     </div>
-    <div id="messages" class="chat-messages"></div>
-    <div id="typingStatus" class="typing-status"></div>
-    <div class="chat-input">
-      <input type="text" id="messageInput" placeholder="Type your message...">
-      <button id="sendBtn">Send</button>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+        <button id="sendBtn">Send</button>
     </div>
-  </div>
-  <script src="script.js"></script>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
