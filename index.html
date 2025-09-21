@@ -4,21 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WhatsApp Clone</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="style.css">
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-<div class="chat-container">
+<div class="user-selection" id="userSelection">
+    <h2>Select User</h2>
+    <button class="user-btn" data-user="ishu">Ishu</button>
+    <button class="user-btn" data-user="billi">Billi</button>
+</div>
+
+<div class="chat-container" id="chatContainer" style="display:none;">
     <!-- Header -->
     <div class="header">
         <div class="header-left">
             <div class="avatar"></div>
             <div class="header-info">
                 <h2 id="chatUser">Chat</h2>
-                <span id="status">Offline</span>
+                <div id="statusContainer"></div>
                 <span id="typingHeader" class="typing-header"></span>
             </div>
         </div>
@@ -27,6 +33,12 @@
 
     <!-- Messages -->
     <div class="messages" id="messages"></div>
+
+    <!-- Reply preview -->
+    <div class="reply-preview" id="replyPreview">
+        Replying to: <span id="replyText"></span>
+        <button id="cancelReply">X</button>
+    </div>
 
     <!-- Input -->
     <div class="input-container">
